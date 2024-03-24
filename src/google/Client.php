@@ -1,6 +1,6 @@
 <?php
 
-namespace google;
+namespace holybunch\shared\google;
 
 class Client
 {
