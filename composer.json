@@ -1,0 +1,21 @@
+{
+    "name": "holybunch/shared",
+    "description": "keine",
+    "type": "library",
+    "require": {
+        "php": ">=8.2"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "holybunch\\shared\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mdevboehm",
+            "email": "mihail.boehm@gmail.com",
+			"role" : "dev"
+        }
+    ]
+}
