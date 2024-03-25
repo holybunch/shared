@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<phpunit 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  colors="true" 
+  stopOnFailure="false" 
+  stopOnWarning="false" 
+  failOnWarning="false" 
+  displayDetailsOnTestsThatTriggerWarnings="true" 
+  displayDetailsOnTestsThatTriggerDeprecations="true" 
+  displayDetailsOnTestsThatTriggerErrors="true" 
+  displayDetailsOnTestsThatTriggerNotices="true" 
+  displayDetailsOnIncompleteTests="true" 
+  displayDetailsOnSkippedTests="true" 
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd">
+  <php>
+    <ini name="xdebug.mode" value="coverage" />
+  </php>
+  <testsuites>
+    <testsuite name="google">
+      <directory>tests/google</directory>
+    </testsuite>
+  </testsuites>
+  <coverage>
+    <report>
+      <html outputDirectory=".tmp/coverage-report"/>
+      <clover outputFile=".tmp/coverage.xml"/>
+    </report>
+  </coverage>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
+</phpunit>
+<!-- https://docs.phpunit.de/en/11.0/configuration.html -->
