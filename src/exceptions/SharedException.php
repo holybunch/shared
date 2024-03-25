@@ -18,7 +18,8 @@ class SharedException extends Exception
         );
     }
 
-    private function code(Exception $e) {
+    private function code(Exception $e)
+    {
         switch ($e::class) {
             case InvalidArgumentException::class:
                 return StatusCodeInterface::STATUS_BAD_REQUEST;

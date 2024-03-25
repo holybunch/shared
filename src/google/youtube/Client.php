@@ -1,4 +1,5 @@
 <?php
+
 namespace holybunch\shared\google\youtube;
 
 use holybunch\shared\google\ClientBase;
