@@ -1,8 +1,7 @@
 <?php
-
 namespace holybunch\shared\google\youtube;
 
-use google\ClientBase;
+use holybunch\shared\google\ClientBase;
 use Google\Service\YouTube;
 
 class Client extends ClientBase

@@ -1,10 +1,10 @@
 <?php
 
-namespace google;
+namespace holybunch\shared\google;
 
 use Exception;
 use Google_Client;
-use exceptions\GoogleAPIException;
+use holybunch\shared\exceptions\SharedException;
 
 abstract class ClientBase
 {
@@ -41,7 +41,7 @@ abstract class ClientBase
             }
             return $client;
         } catch (Exception $e) {
-            throw new GoogleAPIException($e);
+            throw new SharedException($e);
         }
     }
 
