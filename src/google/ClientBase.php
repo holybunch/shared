@@ -8,9 +8,8 @@ use holybunch\shared\exceptions\SharedException;
 
 abstract class ClientBase
 {
-    private const ACCESS_TOKEN = 'access_token';
-    private const ACCESS_TOKEN_EXP = 'access_token_expiry';
-    private const REFRESH_TOKEN_NAME = "youtube_refresh_token";
+    public const ACCESS_TOKEN = 'access_token';
+    public const ACCESS_TOKEN_EXP = 'access_token_expiry';
 
     protected array $scopes;
 
@@ -34,7 +33,7 @@ abstract class ClientBase
             $client->setIncludeGrantedScopes(true);
             $client->setScopes($this->scopes);
 
-            if (!$this->isSessionActive(self::REFRESH_TOKEN_NAME) || $this->accessTokenExpiry()) {
+            if (!$this->isSessionActive() || $this->accessTokenExpiry()) {
                 $client->fetchAccessTokenWithRefreshToken($refreshToken);
                 $_SESSION[self::ACCESS_TOKEN] = $client->getAccessToken();
                 $_SESSION[self::ACCESS_TOKEN_EXP] = time() + 3600;
@@ -45,9 +44,9 @@ abstract class ClientBase
         }
     }
 
-    protected function isSessionActive($refreshToken)
+    protected function isSessionActive()
     {
-        return isset($_SESSION[$refreshToken]) && isset($_SESSION[self::ACCESS_TOKEN_EXP]);
+        return isset($_SESSION[self::ACCESS_TOKEN]) && isset($_SESSION[self::ACCESS_TOKEN_EXP]);
     }
 
     protected function accessTokenExpiry()
