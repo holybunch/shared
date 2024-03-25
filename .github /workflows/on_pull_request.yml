@@ -1,0 +1,78 @@
+name: 📝 PHPCS and PHPUnit tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📦 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🏃 Run PHP Syntax Check
+      uses: J3-Tech/PHP-Lint-Action@v0.0.5
+      with:
+        path: src
+
+  phpcs:
+    name: PHP Code Inspection
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: 🛠️ Install Composer dependencies
+        uses: php-actions/composer@v6
+
+      - name: 🏃 Run PHP Code Inspection
+        run: |
+          composer phpcs      
+
+  phpStan:
+    name: PHP Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: 🛠️ Install Composer dependencies
+        uses: php-actions/composer@v6
+
+      - name: 🏃 Run PHP Code Inspection
+        run: |
+          composer analyze 
+          
+  unitTests:
+    name: PHP unit tests
+    runs-on: ubuntu-latest
+    needs: [lint, phpcs, phpStan]
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: 📥 Install Composer dependencies
+        uses: php-actions/composer@v6
+
+      - name: 🏃 Run PHP Unit Tests
+        run: |
+          composer tests
