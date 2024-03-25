@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+namespace holybunch\shared\tests\google\youtube;
 
 use Fig\Http\Message\StatusCodeInterface;
+use Google_Client;
 use holybunch\shared\exceptions\SharedException;
-use holybunch\shared\exceptions\GoogleAPIException;
 use holybunch\shared\google\youtube\Client as YoutubeClient;
 use holybunch\shared\tests\BaseTest;
 

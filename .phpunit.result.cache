@@ -1,1 +1,0 @@
-{"version":1,"defects":{"te\\google\\youtube\\ClientTest::testYoutubeHappy":8,"ClientTest::testYoutubeHappy":8,"ClientTest::testYoutubeFailed":7},"times":{"ClientTest::testYoutubeHappy":0.053,"google\\youtube\\ClientTest::testYoutubeHappy":0.001,"te\\google\\youtube\\ClientTest::testYoutubeHappy":0.003,"ClientTest::testYoutubeFailed":0}}
