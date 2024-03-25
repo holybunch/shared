@@ -10,7 +10,7 @@ final class ClientTest extends TestCase
 
     public function testYoutubeHappy(): void
     {
-        echo "my test";
+        echo "my test +1";
 
         $this->assertTrue(true);
     }
