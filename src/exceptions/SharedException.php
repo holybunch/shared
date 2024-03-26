@@ -9,7 +9,7 @@ use InvalidArgumentException;
 class SharedException extends Exception
 {
     public function __construct(
-        Exception $previous = null
+        Exception $previous
     ) {
         parent::__construct(
             $previous::class . ": " . $previous->getMessage(),
@@ -18,7 +18,7 @@ class SharedException extends Exception
         );
     }
 
-    private function code(Exception $e)
+    private function code(Exception $e): int
     {
         switch ($e::class) {
             case InvalidArgumentException::class:

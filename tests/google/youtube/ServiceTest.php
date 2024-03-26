@@ -59,7 +59,12 @@ final class ServiceTest extends BaseTest
         $this->service->getPlaylists("my-channel");
     }
 
-    private function demoPlaylists()
+    /**
+     * @return array 
+     *
+     * @phpstan-ignore-next-line 
+     */
+    private function demoPlaylists(): array
     {
         $items = [];
         for ($i = 1; $i < 4; $i++) {
