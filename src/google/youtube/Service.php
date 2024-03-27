@@ -10,13 +10,16 @@ use holybunch\shared\exceptions\SharedException;
 /**
  * Service class for interacting with the YouTube Data API.
  * Extends the base YouTube class from the Google API Client Library for PHP.
+ *
+ * @author holybunch
  */
 class Service extends YouTube
 {
     private const PLAYLIST_PART = 'snippet,id,contentDetails';
 
     /**
-     * Constructs a Service object.
+     * Constructs a new Service object for interacting with the YouTube Data API using
+     * the provided Google API client instance.
      *
      * @param Google_Client $client An authorized Google API client instance.
      */
@@ -31,7 +34,8 @@ class Service extends YouTube
      * @param string $channelId The ID of the channel to retrieve playlists from.
      * @param string $part Comma-separated list of parts to include in the response.
      *               Defaults to snippet,id,contentDetails.
-     * @return PlaylistObject[] An array of PlaylistObject instances representing the retrieved playlists.
+     * @return PlaylistObject[] An array of PlaylistObject instances representing
+     *                          the retrieved playlists.
      * @throws SharedException If an error occurs while retrieving playlists.
      */
     public function getPlaylists(string $channelId, string $part = self::PLAYLIST_PART): array

@@ -7,9 +7,11 @@ use Google_Client;
 use holybunch\shared\exceptions\SharedException;
 
 /**
+ * Class ClientBase.
  * This abstract class serves as a base for implementing Google API client functionalities.
  *
  * @abstract
+ * @author holybunch
  */
 abstract class ClientBase
 {
@@ -20,7 +22,7 @@ abstract class ClientBase
     protected array $scopes;
 
     /**
-     * ClientBase constructor.
+     * Constructs a new ClientBase object with the provided array of scopes.
      *
      * @param string[] $scopes The array of scopes to be set for the client.
      */

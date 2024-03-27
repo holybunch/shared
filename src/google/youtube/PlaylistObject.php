@@ -5,6 +5,8 @@ namespace holybunch\shared\google\youtube;
 /**
  * Represents a YouTube playlist object retrieved from the API.
  * This class encapsulates the properties of a YouTube playlist item.
+ *
+ * @author holybunch
  */
 class PlaylistObject
 {

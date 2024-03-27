@@ -6,8 +6,18 @@ use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 
+/**
+ * Exception class used for handling shared exceptions in the application.
+ *
+ * @author holybunch
+ */
 class SharedException extends Exception
 {
+    /**
+     * Constructs a new SharedException object with the provided previous exception.
+     *
+     * @param Exception $previous The previous exception.
+     */
     public function __construct(
         Exception $previous
     ) {
@@ -18,6 +28,12 @@ class SharedException extends Exception
         );
     }
 
+    /**
+     * Generates appropriate HTTP status code based on the provided exception.
+     *
+     * @param Exception $e The exception.
+     * @return int The HTTP status code.
+     */
     private function code(Exception $e): int
     {
         switch ($e::class) {
