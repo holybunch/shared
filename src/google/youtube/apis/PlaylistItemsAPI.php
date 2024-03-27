@@ -34,16 +34,15 @@ class PlaylistItemsAPI extends YouTube
      *
      * @param string      $playlistId   The ID of the playlist to retrieve video IDs from.
      * @param int|null    $maxCount     Maximum number of video IDs to retrieve (optional).
-     * @param string|null $pageToken Token for pagination (optional).
      *
      * @return string[] An array containing the retrieved video IDs.
      * @throws SharedException If an error occurs during the retrieval process.
      */
-    public function retrievePlaylistVideoIds(string $playlistId, int $maxCount = null, string $pageToken = null): array
+    public function playlistVideoIds(string $playlistId, int $maxCount = null): array
     {
         try {
             $this->videoItemIDs = [];
-            $this->fetchVideoItemIdsRecursive($playlistId, $maxCount, $pageToken);
+            $this->fetchVideoItemIdsRecursive($playlistId, $maxCount, null);
             return $this->videoItemIDs;
         } catch (Exception $e) {
             throw new SharedException($e);
