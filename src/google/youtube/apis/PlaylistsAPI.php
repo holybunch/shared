@@ -1,20 +1,21 @@
 <?php
 
-namespace holybunch\shared\google\youtube;
+namespace holybunch\shared\google\youtube\apis;
 
 use Exception;
 use Google\Service\YouTube;
 use Google_Client;
 use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
+use holybunch\shared\google\youtube\PlaylistObject;
 
 /**
- * Service class for interacting with the YouTube Data API.
- * Extends the base YouTube class from the Google API Client Library for PHP.
+ * Represents a class for interacting with YouTube playlists.
+ * Extends the base YouTube class to utilize the YouTube Data API.
  *
  * @author holybunch
  */
-class Service extends YouTube
+class PlaylistsAPI extends YouTube
 {
     private const PLAYLIST_PART = 'snippet,id,contentDetails';
 
@@ -37,7 +38,7 @@ class Service extends YouTube
      *                          the retrieved playlists.
      * @throws SharedException If an error occurs while retrieving playlists.
      */
-    public function getPlaylists(string $channelId): array
+    public function all(string $channelId): array
     {
         try {
             $result = $this->playlists->listPlaylists(self::PLAYLIST_PART, ['channelId' => $channelId]);
@@ -59,7 +60,7 @@ class Service extends YouTube
      * @throws NotFoundException If the playlist with the given ID is not found.
      * @throws SharedException If any other exception occurs during the retrieval process.
      */
-    public function getPlaylist(string $id): PlaylistObject
+    public function one(string $id): PlaylistObject
     {
         try {
             $result = $this->playlists->listPlaylists(self::PLAYLIST_PART, ['id' => $id]);

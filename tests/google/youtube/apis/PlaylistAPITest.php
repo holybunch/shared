@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace holybunch\shared\tests\google\youtube;
+namespace holybunch\shared\tests\google\youtube\apis;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Google_Client;
-use holybunch\shared\google\youtube\Service as YoutubeService;
 use holybunch\shared\tests\BaseTest;
 use Google\Service\YouTube\Resource\Playlists;
 use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
+use holybunch\shared\google\youtube\apis\PlaylistsAPI;
 use holybunch\shared\google\youtube\PlaylistObject;
 use PHPUnit\Framework\MockObject\MockObject;
 
-final class ServiceTest extends BaseTest
+final class PlaylistAPITest extends BaseTest
 {
     private Playlists&MockObject $playlistsMock;
-    private YoutubeService $service;
+    private PlaylistsAPI $playlistAPI;
 
     public function setUp(): void
     {
-        $this->service = new YoutubeService(new Google_Client());
+        $this->playlistAPI = new PlaylistsAPI(new Google_Client());
 
         $this->playlistsMock = $this->getMockBuilder(Playlists::class)
             ->disableOriginalConstructor()
@@ -35,8 +35,8 @@ final class ServiceTest extends BaseTest
             ->with('snippet,id,contentDetails', ['channelId' => "my-channel"])
             ->willReturn($this->demoPlaylists());
 
-        $this->service->playlists = $this->playlistsMock;
-        $result = $this->service->getPlaylists("my-channel");
+        $this->playlistAPI->playlists = $this->playlistsMock;
+        $result = $this->playlistAPI->all("my-channel");
         $this->assertIsArray($result);
         $this->assertCount(3, $result);
         $this->assertInstanceOf(PlaylistObject::class, $result[1]);
@@ -54,12 +54,12 @@ final class ServiceTest extends BaseTest
             ->with('snippet,id,contentDetails', ['channelId' => "my-channel"])
             ->willThrowException(new \Google\Service\Exception("error ocurred"));
 
-        $this->service->playlists = $this->playlistsMock;
+        $this->playlistAPI->playlists = $this->playlistsMock;
 
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         $this->expectExceptionMessage("error ocurred");
-        $this->service->getPlaylists("my-channel");
+        $this->playlistAPI->all("my-channel");
     }
 
     public function testPlaylistHappy(): void
@@ -69,9 +69,9 @@ final class ServiceTest extends BaseTest
             ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
             ->willReturn($this->demoPlaylists());
 
-        $this->service->playlists = $this->playlistsMock;
+        $this->playlistAPI->playlists = $this->playlistsMock;
 
-        $result = $this->service->getPlaylist("example_id_1");
+        $result = $this->playlistAPI->one("example_id_1");
         $this->assertInstanceOf(PlaylistObject::class, $result);
         $this->assertEquals("example_id_1", $result->getId());
     }
@@ -83,12 +83,12 @@ final class ServiceTest extends BaseTest
             ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
             ->willReturn(["items" => []]);
 
-        $this->service->playlists = $this->playlistsMock;
+        $this->playlistAPI->playlists = $this->playlistsMock;
 
         $this->expectException(NotFoundException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_NOT_FOUND);
         $this->expectExceptionMessage("Playlist for id 'example_id_1' is not found");
-        $this->service->getPlaylist("example_id_1");
+        $this->playlistAPI->one("example_id_1");
     }
 
     public function testPlaylistFailed(): void
@@ -98,12 +98,12 @@ final class ServiceTest extends BaseTest
             ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
             ->willThrowException(new \Google\Service\Exception("error ocurred"));
 
-        $this->service->playlists = $this->playlistsMock;
+        $this->playlistAPI->playlists = $this->playlistsMock;
 
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         $this->expectExceptionMessage("error ocurred");
-        $this->service->getPlaylist("example_id_1");
+        $this->playlistAPI->one("example_id_1");
     }
 
     /**
