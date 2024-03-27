@@ -4,6 +4,7 @@ namespace holybunch\shared\google\youtube\apis;
 
 use Exception;
 use Google\Service\YouTube;
+use Google\Service\YouTube\VideoListResponse;
 use Google_Client;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\VideoObject;
@@ -27,29 +28,28 @@ class VideosAPI extends YouTube
         parent::__construct($client);
     }
 
-
-    public function videosByIds(array $videoIds, int $max = 50): array
+    public function videos(array $videoIds, int $max = 50): array
     {
         try {
             $videos = [];
             $all = array_chunk($videoIds, 45);
             foreach ($all as $singleArray) {
-                $videos = array_merge($videos, $this->fetchVideos($singleArray, $max));
+                $this->processVideos($singleArray, $max, $videos);
             }
             return $videos;
         } catch (Exception $e) {
             throw new SharedException($e);
         }
     }
-
-    private function fetchVideos(array $videoIds, int $max): array
+    
+    private function processVideos(array $videoIds, int $max, array &$videos): void
     {
         $response = $this->fetchVideosRecursive(implode(",", $videoIds), $max);
-        return array_map(function ($item) {
-            return new VideoObject($item);
-        }, $response["items"]);
+        foreach ($response["items"] as $item) {
+            $videos[] = new VideoObject($item);
+        }
     }
-
+    
     private function fetchVideosRecursive($videos, int $max)
     {
         return $this->videos->listVideos(
