@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace holybunch\shared\tests\google\youtube;
 
 use Fig\Http\Message\StatusCodeInterface;
@@ -7,6 +9,7 @@ use Google_Client;
 use holybunch\shared\google\youtube\Service as YoutubeService;
 use holybunch\shared\tests\BaseTest;
 use Google\Service\YouTube\Resource\Playlists;
+use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\PlaylistObject;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -52,11 +55,55 @@ final class ServiceTest extends BaseTest
             ->willThrowException(new \Google\Service\Exception("error ocurred"));
 
         $this->service->playlists = $this->playlistsMock;
-        
+
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         $this->expectExceptionMessage("error ocurred");
         $this->service->getPlaylists("my-channel");
+    }
+
+    public function testPlaylistHappy(): void
+    {
+        $this->playlistsMock->expects($this->once())
+            ->method("listPlaylists")
+            ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
+            ->willReturn($this->demoPlaylists());
+
+        $this->service->playlists = $this->playlistsMock;
+
+        $result = $this->service->getPlaylist("example_id_1");
+        $this->assertInstanceOf(PlaylistObject::class, $result);
+        $this->assertEquals("example_id_1", $result->getId());
+    }
+
+    public function testPlaylistNotFound(): void
+    {
+        $this->playlistsMock->expects($this->once())
+            ->method("listPlaylists")
+            ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
+            ->willReturn(["items" => []]);
+
+        $this->service->playlists = $this->playlistsMock;
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionCode(StatusCodeInterface::STATUS_NOT_FOUND);
+        $this->expectExceptionMessage("Playlist for id 'example_id_1' is not found");
+        $this->service->getPlaylist("example_id_1");
+    }
+
+    public function testPlaylistFailed(): void
+    {
+        $this->playlistsMock->expects($this->once())
+            ->method("listPlaylists")
+            ->with('snippet,id,contentDetails', ['id' => "example_id_1"])
+            ->willThrowException(new \Google\Service\Exception("error ocurred"));
+
+        $this->service->playlists = $this->playlistsMock;
+
+        $this->expectException(SharedException::class);
+        $this->expectExceptionCode(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
+        $this->expectExceptionMessage("error ocurred");
+        $this->service->getPlaylist("example_id_1");
     }
 
     /**

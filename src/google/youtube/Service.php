@@ -5,6 +5,7 @@ namespace holybunch\shared\google\youtube;
 use Exception;
 use Google\Service\YouTube;
 use Google_Client;
+use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 
 /**
@@ -32,26 +33,42 @@ class Service extends YouTube
      * Retrieves playlists for a given channel ID.
      *
      * @param string $channelId The ID of the channel to retrieve playlists from.
-     * @param string $part Comma-separated list of parts to include in the response.
-     *               Defaults to snippet,id,contentDetails.
      * @return PlaylistObject[] An array of PlaylistObject instances representing
      *                          the retrieved playlists.
      * @throws SharedException If an error occurs while retrieving playlists.
      */
-    public function getPlaylists(string $channelId, string $part = self::PLAYLIST_PART): array
+    public function getPlaylists(string $channelId): array
     {
         try {
-            $result = $this->playlists->listPlaylists(
-                $part,
-                [ 'channelId' => $channelId ]
-            );
-
+            $result = $this->playlists->listPlaylists(self::PLAYLIST_PART, ['channelId' => $channelId]);
             $playlists = [];
             foreach ($result['items'] as $item) {
                 $playlists[] = new PlaylistObject($item);
             }
-
             return $playlists;
+        } catch (Exception $e) {
+            throw new SharedException($e);
+        }
+    }
+
+    /**
+     * Retrieves a playlist object by its ID.
+     *
+     * @param string $id The ID of the playlist to retrieve.
+     * @return PlaylistObject The playlist object.
+     * @throws NotFoundException If the playlist with the given ID is not found.
+     * @throws SharedException If any other exception occurs during the retrieval process.
+     */
+    public function getPlaylist(string $id): PlaylistObject
+    {
+        try {
+            $result = $this->playlists->listPlaylists(self::PLAYLIST_PART, ['id' => $id]);
+            if (empty($result['items'])) {
+                throw new NotFoundException("Playlist for id '$id' is not found");
+            }
+            return new PlaylistObject($result['items'][0]);
+        } catch (NotFoundException $e) {
+            throw $e;
         } catch (Exception $e) {
             throw new SharedException($e);
         }
