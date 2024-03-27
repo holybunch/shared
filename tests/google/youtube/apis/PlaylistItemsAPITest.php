@@ -28,20 +28,35 @@ final class PlaylistItemsAPITest extends BaseTest
 
     public function testPlaylistVideoIdsHappy(): void
     {
-        $this->playlistItemsMock->expects($this->once())
+        // Configure the mock to expect two calls to listPlaylistItems
+        // with specific arguments and return values
+        $this->playlistItemsMock->expects($this->exactly(2))
             ->method("listPlaylistItems")
-            ->with('snippet', [
-                'playlistId' => "example_id_1",
-                'maxResults' => '50'
-            ])
-            ->willReturn(['items' => $this->demoItems()]);
+            ->willReturnCallback(function (string $part, array $params) {
+                // Check arguments for the first call (no pageToken)
+                if ($part === 'snippet' && $params === [
+                    'playlistId' => "example_id_1",
+                    'maxResults' => '50',
+                ]) {
+                    return ['items' => $this->demoItems(1), 'nextPageToken' => 'any'];
+                } elseif ($part === 'snippet' && $params === [
+                    // Check arguments for the second call (with pageToken)
+                    'playlistId' => "example_id_1",
+                    'maxResults' => '50',
+                    'pageToken' => 'any',
+                ]) {
+                    return ['items' => $this->demoItems(1), 'nextPageToken' => null];
+                } else {
+                    $this->fail("check failed"); // Optional: Handle unexpected arguments
+                }
+            });
 
         $this->playlistItemsAPI->playlistItems = $this->playlistItemsMock;
 
-        $result = $this->playlistItemsAPI->playlistVideoIds("example_id_1", 5);
+        $result = $this->playlistItemsAPI->playlistVideoIds("example_id_1", 15);
         $this->assertNotEmpty($result);
-        $this->assertCount(5, $result);
-        $this->assertEquals("video-2", $result[1]);
+        $this->assertCount(15, $result);
+        $this->assertEquals("video-2-1", $result[1]);
     }
 
     public function testPlaylistVideoIdsFailed(): void
@@ -63,10 +78,11 @@ final class PlaylistItemsAPITest extends BaseTest
     }
 
     /** @phpstan-ignore-next-line */
-    private function demoItems(): array {
+    private function demoItems(int $suffix): array
+    {
         $items = [];
-        for ($i=1; $i < 10; $i++) { 
-            $items[] = ['snippet' => ['resourceId' => ['videoId' => "video-$i"]]];
+        for ($i = 1; $i < 10; $i++) {
+            $items[] = ['snippet' => ['resourceId' => ['videoId' => "video-$i-$suffix"]]];
         }
         return $items;
     }
