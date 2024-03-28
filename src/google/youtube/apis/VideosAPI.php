@@ -4,7 +4,6 @@ namespace holybunch\shared\google\youtube\apis;
 
 use Exception;
 use Google\Service\YouTube;
-use Google\Service\YouTube\VideoListResponse;
 use Google_Client;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\VideoObject;
@@ -17,7 +16,7 @@ use holybunch\shared\google\youtube\VideoObject;
  */
 class VideosAPI extends YouTube
 {
-    private const int MAX_RESULT = 45;
+    private const MAX_RESULT = 45;
 
     /** @var VideoObject[] */
     private array $videoObjects = [];
