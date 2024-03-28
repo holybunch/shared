@@ -28,17 +28,21 @@ final class VideosAPITest extends BaseTest
 
     public function testVideosHappy(): void
     {
+        $counter = 0;
         $this->videosMock->expects($this->exactly(2))
             ->method("listVideos")
             ->with(
                 $this->equalTo('snippet,liveStreamingDetails,statistics,contentDetails'),
-                $this->callback(function($arg){
+                $this->callback(function($arg) use (&$counter){
+                    ++$counter;
                    return 
-                        (str_starts_with($arg["id"], "video1,") && str_ends_with($arg["id"], ",video45")) || 
-                        (str_starts_with($arg["id"], "video46,") && str_ends_with($arg["id"], ",video69"));
+                        (str_starts_with($arg["id"], "video1,") && str_ends_with($arg["id"], ",video30")) || 
+                        (str_starts_with($arg["id"], "video31,") && str_ends_with($arg["id"], ",video49"));
                 })
             )
-            ->willReturn($this->demoVideos());
+            ->willReturnCallback(function($arr) use (&$counter){
+                return $this->demoVideos($counter);
+            });
 
         $this->videosAPI->videos = $this->videosMock;
 
@@ -79,17 +83,18 @@ final class VideosAPITest extends BaseTest
     private function demoIds(): array 
     {
         $ids = [];
-        for ($i=1; $i < 70; $i++) { 
+        for ($i=1; $i < 50; $i++) { 
             $ids[] = "video$i";
         }
         return $ids;
     }
 
     /** @phpstan-ignore-next-line */
-    private function demoVideos(): array
+    private function demoVideos(int $counter): array
     {
+        $number = ($counter == 1) ? 30 : 20;
         $items = [];
-        for ($i = 1; $i < 46; $i++) {
+        for ($i = 1; $i <= $number; $i++) {
             $items[] = [
                 'id' => 'video' . $i,
                 'snippet' => [

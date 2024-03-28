@@ -16,7 +16,7 @@ use holybunch\shared\google\youtube\VideoObject;
  */
 class VideosAPI extends YouTube
 {
-    private const MAX_RESULT = 45;
+    public const MAX_RESULT = 30;
 
     /** @var VideoObject[] */
     private array $videoObjects = [];
@@ -36,16 +36,15 @@ class VideosAPI extends YouTube
      * Retrieves video objects based on provided video IDs.
      *
      * @param string[] $videoIds Array containing video IDs to retrieve video objects for.
-     * @param int $max Maximum number of video objects to retrieve (default is 50).
      * @return VideoObject[] Array containing the retrieved video objects.
      * @throws SharedException If an exception occurs during the retrieval process.
      */
-    public function videos(array $videoIds, int $max = 50): array
+    public function videos(array $videoIds): array
     {
         try {
             $this->videoObjects = [];
             foreach (array_chunk($videoIds, self::MAX_RESULT) as $singleArray) {
-                $this->processVideos($singleArray, $max);
+                $this->processVideos($singleArray);
             }
             return $this->videoObjects;
         } catch (Exception $e) {
@@ -57,9 +56,8 @@ class VideosAPI extends YouTube
     * Processes video IDs to retrieve video details.
     *
     * @param string[] $videoIds Array containing video IDs to retrieve details for.
-    * @param int $max Maximum number of video objects to retrieve.
     */
-    private function processVideos(array $videoIds, int $max): void
+    private function processVideos(array $videoIds): void
     {
         $response = $this->videos->listVideos(
             'snippet,liveStreamingDetails,statistics,contentDetails',
@@ -70,9 +68,6 @@ class VideosAPI extends YouTube
         );
 
         foreach ($response["items"] as $item) {
-            if (count($this->videoObjects) >= $max) {
-                return;
-            }
             $this->videoObjects[] = new VideoObject($item);
         }
     }
