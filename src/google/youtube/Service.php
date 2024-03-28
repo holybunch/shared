@@ -37,24 +37,24 @@ final class Service
         }
     }
 
-    public function getGoogleClient(): Google_Client
+    public function googleClient(): Google_Client
     {
         return $this->googleClient;
     }
 
-    public function getPlaylistsAPI(): PlaylistsAPI
+    public function playlistsAPI(): PlaylistsAPI
     {
-        return new PlaylistsAPI($this->getGoogleClient());
+        return new PlaylistsAPI($this->googleClient());
     }
 
-    public function getPlaylistItemsAPI(): PlaylistItemsAPI
+    public function playlistItemsAPI(): PlaylistItemsAPI
     {
-        return new PlaylistItemsAPI($this->getGoogleClient());
+        return new PlaylistItemsAPI($this->googleClient());
     }
 
-    public function getVideosAPI(): VideosAPI
+    public function videosAPI(): VideosAPI
     {
-        return new VideosAPI($this->getGoogleClient());
+        return new VideosAPI($this->googleClient());
     }
 
     private function obtainRefreshToken(): string
