@@ -28,7 +28,7 @@ class VideoObject
      *      id: string,
      *      snippet: array{
      *          title: string,
-     *          publishedAt: string,
+     *          publishedAt: string|null,
      *          thumbnails: array{
      *              medium: array{
      *                  url: string,
@@ -131,10 +131,10 @@ class VideoObject
     /**
      * Format the date string to a specific format.
      *
-     * @param string $input The input date string
+     * @param string|null $input The input date string
      * @return string|null The formatted date string, or null if input is null
      */
-    private function formatDate(string $input): ?string
+    private function formatDate(?string $input): ?string
     {
         if ($input != null) {
             $date = new DateTime($input);
