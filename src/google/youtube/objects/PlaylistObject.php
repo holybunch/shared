@@ -1,6 +1,6 @@
 <?php
 
-namespace holybunch\shared\google\youtube;
+namespace holybunch\shared\google\youtube\objects;
 
 /**
  * Represents a YouTube playlist object retrieved from the API.

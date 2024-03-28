@@ -1,6 +1,6 @@
 <?php
 
-namespace holybunch\shared\google\youtube;
+namespace holybunch\shared\google\youtube\objects;
 
 use DateInterval;
 use DateTime;

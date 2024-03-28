@@ -11,7 +11,7 @@ use Google\Service\YouTube\Resource\Playlists;
 use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\apis\PlaylistsAPI;
-use holybunch\shared\google\youtube\PlaylistObject;
+use holybunch\shared\google\youtube\objects\PlaylistObject;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class PlaylistsAPITest extends BaseTest

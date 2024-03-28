@@ -66,7 +66,7 @@ final class VideosAPITest extends BaseTest
             ->with(
                 $this->equalTo('snippet,liveStreamingDetails,statistics,contentDetails'),
                 $this->callback(function($arg){
-                   return (str_starts_with($arg["id"], "video1,") && str_ends_with($arg["id"], ",video45"));
+                   return (str_starts_with($arg["id"], "video1,") && str_ends_with($arg["id"], ",video30"));
                 })
             )
             ->willThrowException(new \Google\Service\Exception("error ocurred"));

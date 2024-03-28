@@ -6,7 +6,7 @@ use Exception;
 use Google\Service\YouTube;
 use Google_Client;
 use holybunch\shared\exceptions\SharedException;
-use holybunch\shared\google\youtube\VideoObject;
+use holybunch\shared\google\youtube\objects\VideoObject;
 
 /**
  * Represents a class for interacting with YouTube videos.

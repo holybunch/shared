@@ -7,7 +7,7 @@ use Google\Service\YouTube;
 use Google_Client;
 use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
-use holybunch\shared\google\youtube\PlaylistObject;
+use holybunch\shared\google\youtube\objects\PlaylistObject;
 
 /**
  * Represents a class for interacting with YouTube playlists.
