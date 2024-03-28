@@ -17,6 +17,9 @@ use holybunch\shared\google\youtube\VideoObject;
  */
 class VideosAPI extends YouTube
 {
+    private const int MAX_RESULT = 45;
+    private array $videoObjects = [];
+
     /**
      * Constructs a new Service object for interacting with the YouTube Data API using
      * the provided Google API client instance.
@@ -31,33 +34,31 @@ class VideosAPI extends YouTube
     public function videos(array $videoIds, int $max = 50): array
     {
         try {
-            $videos = [];
-            $all = array_chunk($videoIds, 45);
-            foreach ($all as $singleArray) {
-                $this->processVideos($singleArray, $max, $videos);
+            $this->videoObjects = [];
+            foreach (array_chunk($videoIds, self::MAX_RESULT) as $singleArray) {
+                $this->processVideos($singleArray, $max);
             }
-            return $videos;
+            return $this->videoObjects;
         } catch (Exception $e) {
             throw new SharedException($e);
         }
     }
     
-    private function processVideos(array $videoIds, int $max, array &$videos): void
+    private function processVideos(array $videoIds, int $max): void
     {
-        $response = $this->fetchVideosRecursive(implode(",", $videoIds), $max);
-        foreach ($response["items"] as $item) {
-            $videos[] = new VideoObject($item);
-        }
-    }
-    
-    private function fetchVideosRecursive($videos, int $max)
-    {
-        return $this->videos->listVideos(
+        $response = $this->videos->listVideos(
             'snippet,liveStreamingDetails,statistics,contentDetails',
-            array(
-                'id' => $videos,
-                'maxResults' => $max
-            )
+            [
+                'id' => implode(",", $videoIds),
+                'maxResults' => self::MAX_RESULT
+            ]
         );
+
+        foreach ($response["items"] as $item) {
+            if (count($this->videoObjects) >= $max) {
+                return;
+            }
+            $this->videoObjects[] = new VideoObject($item);
+        }
     }
 }

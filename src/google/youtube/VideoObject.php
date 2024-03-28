@@ -16,7 +16,7 @@ class VideoObject
     private string $id;
     private string $title;
     private string $thumbnail;
-    private string $publishedAt;
+    private ?string $publishedAt;
     private string $likeCount;
     private string $viewCount;
     private string $duration;
@@ -73,9 +73,9 @@ class VideoObject
     /**
      * Get the published date of the video.
      *
-     * @return string The published date of the video
+     * @return string|null The published date of the video or null
      */
-    public function getPublishedAt(): string
+    public function getPublishedAt(): ?string
     {
         return $this->publishedAt;
     }
