@@ -90,6 +90,6 @@ abstract class ClientBase
      */
     protected function accessTokenExpiry(): bool
     {
-        return time() > $_SESSION[self::ACCESS_TOKEN];
+        return time() > $_SESSION[self::ACCESS_TOKEN_EXP];
     }
 }
