@@ -21,7 +21,7 @@ class PlaylistObject
     /**
      * Initializes the PlaylistObject instance with data from the YouTube API playlist item.
      *
-     * @param Playlist $apiPlayListItem The google Playlist containing information about the item from the YouTube API response.
+     * @param Playlist $apiPlayListItem The google object containing information about the playlist item from the YouTube API response.
      */
     public function __construct(Playlist $apiPlayListItem)
     {
