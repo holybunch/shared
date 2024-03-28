@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace holybunch\shared\tests\google\youtube\apis;
 
 use Fig\Http\Message\StatusCodeInterface;
+use Google\Service\YouTube\Playlist;
+use Google\Service\YouTube\PlaylistContentDetails;
+use Google\Service\YouTube\PlaylistSnippet;
 use Google_Client;
 use holybunch\shared\tests\BaseTest;
 use Google\Service\YouTube\Resource\Playlists;
+use Google\Service\YouTube\Thumbnail;
+use Google\Service\YouTube\ThumbnailDetails;
+use Google\Service\YouTube\VideoSnippet;
 use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\apis\PlaylistsAPI;
@@ -43,7 +49,7 @@ final class PlaylistsAPITest extends BaseTest
         $this->assertEquals("example_id_2", $result[1]->getId());
         $this->assertEquals("Example Title 2", $result[1]->getTitle());
         $this->assertEquals("Example Description 2", $result[1]->getDescription());
-        $this->assertEquals("http://example.com/image2.jpg", $result[1]->getThumbnail());
+        $this->assertEquals("https://example.com/thumbnail.jpg", $result[1]->getThumbnail());
         $this->assertEquals(10, $result[1]->getItemCount());
     }
 
@@ -111,21 +117,23 @@ final class PlaylistsAPITest extends BaseTest
     {
         $items = [];
         for ($i = 1; $i < 4; $i++) {
-            $items[] = [
-                "id" => "example_id_$i",
-                "snippet" => [
-                    "title" => "Example Title $i",
-                    "description" => "Example Description $i",
-                    "thumbnails" => [
-                        "medium" => [
-                            "url" => "http://example.com/image$i.jpg"
-                        ]
-                    ]
-                ],
-                "contentDetails" => [
-                    "itemCount" => 10
-                ]
-            ];
+            $playlist = new Playlist();
+            $playlist->setId("example_id_$i");
+            $thumbnail = new Thumbnail();
+            $thumbnail->setUrl('https://example.com/thumbnail.jpg');
+            $thumbnailDetails = new ThumbnailDetails();
+            $thumbnailDetails->setMedium($thumbnail);
+            $playlistSnippet = new PlaylistSnippet();
+            $playlistSnippet->setTitle('Example Title ' . $i);
+            $playlistSnippet->setDescription("Example Description $i");
+            $playlistSnippet->setThumbnails($thumbnailDetails);
+            $playlistSnippet->setPublishedAt('2024-03-17T08:00:00Z');   
+            $playlist->setSnippet($playlistSnippet); 
+            $contentDetails = new PlaylistContentDetails();
+            $contentDetails->setItemCount("10");
+            $playlist->setContentDetails($contentDetails);
+
+            $items[] = $playlist;
         }
 
         return [

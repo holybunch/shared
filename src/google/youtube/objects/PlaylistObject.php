@@ -16,20 +16,22 @@ class PlaylistObject
     private string $title;
     private string $description;
     private string $thumbnail;
-    private int $itemCount;
+    private string $itemCount;
 
     /**
      * Initializes the PlaylistObject instance with data from the YouTube API playlist item.
      *
-     * @param Playlist $apiPlayListItem The google object containing information about the playlist item from the YouTube API response.
+     * @param Playlist $apiPlayListItem The google object containing information about the playlist item
+     *                 from the YouTube API response.
      */
     public function __construct(Playlist $apiPlayListItem)
     {
-        $this->id = $apiPlayListItem["id"];
-        $this->title = $apiPlayListItem["snippet"]["title"];
-        $this->description = $apiPlayListItem["snippet"]["description"];
-        $this->thumbnail = $apiPlayListItem["snippet"]["thumbnails"]["medium"]["url"]; //320/180
-        $this->itemCount = $apiPlayListItem["contentDetails"]["itemCount"];
+        $snippet = $apiPlayListItem->getSnippet();
+        $this->id = $apiPlayListItem->getId();
+        $this->title = $snippet->getTitle();
+        $this->description = $snippet->getDescription();
+        $this->thumbnail = $snippet->getThumbnails()->getMedium()->getUrl();
+        $this->itemCount = $apiPlayListItem->getContentDetails()->getItemCount();
     }
 
     /**
@@ -75,9 +77,9 @@ class PlaylistObject
     /**
      * Gets the number of items in the playlist.
      *
-     * @return int The number of items in the playlist.
+     * @return string The number of items in the playlist.
      */
-    public function getItemCount(): int
+    public function getItemCount(): string
     {
         return $this->itemCount;
     }

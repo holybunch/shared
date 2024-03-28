@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace holybunch\shared\tests\google\youtube\apis;
 
 use Fig\Http\Message\StatusCodeInterface;
+use Google\Service\YouTube\Resource\Thumbnails;
 use Google_Client;
 use holybunch\shared\tests\BaseTest;
 use Google\Service\YouTube\Resource\Videos;
+use Google\Service\YouTube\Thumbnail;
+use Google\Service\YouTube\ThumbnailDetails;
+use Google\Service\YouTube\Video;
+use Google\Service\YouTube\VideoContentDetails;
+use Google\Service\YouTube\VideoSnippet;
+use Google\Service\YouTube\VideoStatistics;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\apis\VideosAPI;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -95,29 +102,29 @@ final class VideosAPITest extends BaseTest
         $number = ($counter == 1) ? 30 : 20;
         $items = [];
         for ($i = 1; $i <= $number; $i++) {
-            $items[] = [
-                'id' => 'video' . $i,
-                'snippet' => [
-                    'title' => 'Sample Video Title ' . $i,
-                    'thumbnails' => [
-                        'medium' => [
-                            'url' => 'https://example.com/thumbnail.jpg'
-                        ]
-                    ],
-                    'publishedAt' => '2024-03-17T08:00:00Z'
-                ],
-                'contentDetails' => [
-                    'duration' => 'PT1H30M15S'
-                ],
-                'statistics' => [
-                    'likeCount' => 100,
-                    'viewCount' => 1000
-                ]
-            ];
-
+            $video = new Video();
+            $video->setId('video' . $i);
+            $thumbnail = new Thumbnail();
+            $thumbnail->setUrl('https://example.com/thumbnail.jpg');
+            $thumbnailDetails = new ThumbnailDetails();
+            $thumbnailDetails->setMedium($thumbnail);
+            $videoSnippet = new VideoSnippet();
+            $videoSnippet->setTitle('Sample Video Title ' . $i);
+            $videoSnippet->setThumbnails($thumbnailDetails);
+            $videoSnippet->setPublishedAt('2024-03-17T08:00:00Z');            
             if ($i == 10) {
-                $items[9]['snippet']['publishedAt'] = null;
+                $videoSnippet->setPublishedAt(null);
             }
+            $video->setSnippet($videoSnippet);
+            $contentDetails = new VideoContentDetails();
+            $contentDetails->setDuration('PT1H30M15S');
+            $video->setContentDetails($contentDetails);
+            $statistics = new VideoStatistics();
+            $statistics->setLikeCount("100");
+            $statistics->setViewCount("1000");
+            $video->setStatistics($statistics);
+
+            $items[] = $video;
         }
 
         return [
