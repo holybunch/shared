@@ -2,6 +2,8 @@
 
 namespace holybunch\shared\google\youtube\objects;
 
+use Google\Service\YouTube\Playlist;
+
 /**
  * Represents a YouTube playlist object retrieved from the API.
  * This class encapsulates the properties of a YouTube playlist item.
@@ -19,23 +21,9 @@ class PlaylistObject
     /**
      * Initializes the PlaylistObject instance with data from the YouTube API playlist item.
      *
-     * @param array{
-     *      id: string,
-     *      snippet: array{
-     *          title: string,
-     *          description: string,
-     *          thumbnails: array{
-     *              medium: array{
-     *                  url: string,
-     *              },
-     *          },
-     *      },
-     *      contentDetails: array{
-     *          itemCount: int,
-     *      },
-     * } $apiPlayListItem The array containing information about the playlist item from the YouTube API response.
+     * @param Playlist $apiPlayListItem The google Playlist containing information about the item from the YouTube API response.
      */
-    public function __construct(array $apiPlayListItem)
+    public function __construct(Playlist $apiPlayListItem)
     {
         $this->id = $apiPlayListItem["id"];
         $this->title = $apiPlayListItem["snippet"]["title"];

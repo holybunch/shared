@@ -64,6 +64,8 @@ abstract class ClientBase
                 $client->fetchAccessTokenWithRefreshToken($refreshToken);
                 $_SESSION[self::ACCESS_TOKEN] = $client->getAccessToken();
                 $_SESSION[self::ACCESS_TOKEN_EXP] = time() + 3600;
+            } else {
+                $client->setAccessToken($_SESSION[self::ACCESS_TOKEN]);
             }
             return $client;
         } catch (Exception $e) {
