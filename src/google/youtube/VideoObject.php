@@ -17,20 +17,38 @@ class VideoObject
     private string $title;
     private string $thumbnail;
     private ?string $publishedAt;
-    private string $likeCount;
-    private string $viewCount;
+    private int $likeCount;
+    private int $viewCount;
     private string $duration;
 
     /**
-     * Constructor to initialize a VideoObject instance from YouTube API video item data.
+     * Constructs a VideoObject instance from the provided YouTube API video item array.
      *
-     * @param array $apiVideoItem The YouTube API video item data
+     * @param array{
+     *      id: string,
+     *      snippet: array{
+     *          title: string,
+     *          publishedAt: string,
+     *          thumbnails: array{
+     *              medium: array{
+     *                  url: string,
+     *              },
+     *          },
+     *      },
+     *      statistics: array{
+     *          likeCount: int,
+     *          viewCount: int,
+     *      },
+     *      contentDetails: array{
+     *          duration: string,
+     *      }
+     * } $apiVideoItem The array containing information about the video item from the YouTube API response.
      */
     public function __construct(array $apiVideoItem)
     {
         $start = new DateTime('@0'); // Unix epoch
         $start->add(new DateInterval($apiVideoItem['contentDetails']['duration']));
-        
+
         $this->id = $apiVideoItem['id'];
         $this->title = $apiVideoItem['snippet']['title'];
         $this->thumbnail = $apiVideoItem['snippet']['thumbnails']['medium']['url'];
@@ -83,9 +101,9 @@ class VideoObject
     /**
      * Get the number of likes on the video.
      *
-     * @return string The number of likes on the video
+     * @return int The number of likes on the video
      */
-    public function getLikeCount(): string
+    public function getLikeCount(): int
     {
         return $this->likeCount;
     }
@@ -93,9 +111,9 @@ class VideoObject
     /**
      * Get the number of views on the video.
      *
-     * @return string The number of views on the video
+     * @return int The number of views on the video
      */
-    public function getViewCount(): string
+    public function getViewCount(): int
     {
         return $this->viewCount;
     }
@@ -113,10 +131,10 @@ class VideoObject
     /**
      * Format the date string to a specific format.
      *
-     * @param mixed $input The input date string
+     * @param string $input The input date string
      * @return string|null The formatted date string, or null if input is null
      */
-    private function formatDate($input): ?string
+    private function formatDate(string $input): ?string
     {
         if ($input != null) {
             $date = new DateTime($input);

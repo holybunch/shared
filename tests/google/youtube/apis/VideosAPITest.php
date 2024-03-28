@@ -75,6 +75,7 @@ final class VideosAPITest extends BaseTest
         $this->videosAPI->videos($this->demoIds());
     }
 
+    /** @return string[] */
     private function demoIds(): array 
     {
         $ids = [];
@@ -84,6 +85,7 @@ final class VideosAPITest extends BaseTest
         return $ids;
     }
 
+    /** @phpstan-ignore-next-line */
     private function demoVideos(): array
     {
         $items = [];

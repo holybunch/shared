@@ -18,6 +18,8 @@ use holybunch\shared\google\youtube\VideoObject;
 class VideosAPI extends YouTube
 {
     private const int MAX_RESULT = 45;
+
+    /** @var VideoObject[] */
     private array $videoObjects = [];
 
     /**
@@ -31,6 +33,14 @@ class VideosAPI extends YouTube
         parent::__construct($client);
     }
 
+    /**
+     * Retrieves video objects based on provided video IDs.
+     *
+     * @param string[] $videoIds Array containing video IDs to retrieve video objects for.
+     * @param int $max Maximum number of video objects to retrieve (default is 50).
+     * @return VideoObject[] Array containing the retrieved video objects.
+     * @throws SharedException If an exception occurs during the retrieval process.
+     */
     public function videos(array $videoIds, int $max = 50): array
     {
         try {
@@ -43,7 +53,13 @@ class VideosAPI extends YouTube
             throw new SharedException($e);
         }
     }
-    
+
+    /**
+    * Processes video IDs to retrieve video details.
+    *
+    * @param string[] $videoIds Array containing video IDs to retrieve details for.
+    * @param int $max Maximum number of video objects to retrieve.
+    */
     private function processVideos(array $videoIds, int $max): void
     {
         $response = $this->videos->listVideos(
