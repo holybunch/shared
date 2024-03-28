@@ -4,6 +4,7 @@ namespace holybunch\shared\google\youtube\objects;
 
 use DateInterval;
 use DateTime;
+use Google\Service\YouTube\Video;
 
 /**
  * Represents a YouTube video object retrieved from the API.
@@ -24,27 +25,9 @@ class VideoObject
     /**
      * Constructs a VideoObject instance from the provided YouTube API video item array.
      *
-     * @param array{
-     *      id: string,
-     *      snippet: array{
-     *          title: string,
-     *          publishedAt: string|null,
-     *          thumbnails: array{
-     *              medium: array{
-     *                  url: string,
-     *              },
-     *          },
-     *      },
-     *      statistics: array{
-     *          likeCount: int,
-     *          viewCount: int,
-     *      },
-     *      contentDetails: array{
-     *          duration: string,
-     *      }
-     * } $apiVideoItem The array containing information about the video item from the YouTube API response.
+     * @param Video $apiVideoItem The google object containing information about the video item from the YouTube API response.
      */
-    public function __construct(array $apiVideoItem)
+    public function __construct(Video $apiVideoItem)
     {
         $start = new DateTime('@0'); // Unix epoch
         $start->add(new DateInterval($apiVideoItem['contentDetails']['duration']));
