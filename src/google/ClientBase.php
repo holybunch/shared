@@ -1,30 +1,56 @@
 <?php
 
-namespace google;
+namespace holybunch\shared\google;
 
 use Exception;
 use Google_Client;
-use exceptions\GoogleAPIException;
+use holybunch\shared\exceptions\SharedException;
 
+/**
+ * Class ClientBase.
+ * This abstract class serves as a base for implementing Google API client functionalities.
+ *
+ * @abstract
+ * @author holybunch
+ */
 abstract class ClientBase
 {
-    private const ACCESS_TOKEN = 'access_token';
-    private const ACCESS_TOKEN_EXP = 'access_token_expiry';
-    private const REFRESH_TOKEN_NAME = "youtube_refresh_token";
+    public const ACCESS_TOKEN = 'access_token';
+    public const ACCESS_TOKEN_EXP = 'access_token_expiry';
 
+    /** @var string[] List of Google API scopes required by the client. */
     protected array $scopes;
 
+    /**
+     * Constructs a new ClientBase object with the provided array of scopes.
+     *
+     * @param string[] $scopes The array of scopes to be set for the client.
+     */
     public function __construct(array $scopes)
     {
         $this->setScopes($scopes);
     }
 
+    /**
+     * Sets the list of Google API scopes required by the client.
+     *
+     * @param string[] $scopes List of scopes.
+     */
     public function setScopes(array $scopes): void
     {
         $this->scopes = $scopes;
     }
 
-    public function create(string $credentials, string $refreshToken)
+    /**
+     * Creates a Google API client using the provided credentials and refresh token.
+     * It checks for a valid access token in the session and refreshes it if necessary.
+     *
+     * @param string $credentials Path to the JSON credentials file for the Google API.
+     * @param string $refreshToken Refresh token for obtaining a new access token.
+     * @return Google_Client The created Google API client.
+     * @throws SharedException If an error occurs during client creation or token refresh.
+     */
+    public function create(string $credentials, string $refreshToken): Google_Client
     {
         try {
             $client = new Google_Client();
@@ -34,23 +60,33 @@ abstract class ClientBase
             $client->setIncludeGrantedScopes(true);
             $client->setScopes($this->scopes);
 
-            if (!$this->isSessionActive(self::REFRESH_TOKEN_NAME) || $this->accessTokenExpiry()) {
+            if (!$this->isSessionActive() || $this->accessTokenExpiry()) {
                 $client->fetchAccessTokenWithRefreshToken($refreshToken);
                 $_SESSION[self::ACCESS_TOKEN] = $client->getAccessToken();
                 $_SESSION[self::ACCESS_TOKEN_EXP] = time() + 3600;
             }
             return $client;
         } catch (Exception $e) {
-            throw new GoogleAPIException($e);
+            throw new SharedException($e);
         }
     }
 
-    protected function isSessionActive($refreshToken)
+    /**
+     * Checks if an active session exists.
+     *
+     * @return bool Returns true if an active session exists; otherwise, false.
+     */
+    protected function isSessionActive(): bool
     {
-        return isset($_SESSION[$refreshToken]) && isset($_SESSION[self::ACCESS_TOKEN_EXP]);
+        return isset($_SESSION[self::ACCESS_TOKEN]) && isset($_SESSION[self::ACCESS_TOKEN_EXP]);
     }
 
-    protected function accessTokenExpiry()
+    /**
+     * Checks if the access token has expired.
+     *
+     * @return bool Returns true if the access token has expired; otherwise, false.
+     */
+    protected function accessTokenExpiry(): bool
     {
         return time() > $_SESSION[self::ACCESS_TOKEN];
     }

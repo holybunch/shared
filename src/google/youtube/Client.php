@@ -2,11 +2,20 @@
 
 namespace holybunch\shared\google\youtube;
 
-use google\ClientBase;
+use holybunch\shared\google\ClientBase;
 use Google\Service\YouTube;
 
-class Client extends ClientBase
+/**
+ * Google YouTube API client class.
+ *
+ * @author holybunch
+ * @final
+ */
+final class Client extends ClientBase
 {
+    /**
+     * Constructs a new Client object for interacting with the Google YouTube API.
+     */
     public function __construct()
     {
         parent::__construct([
