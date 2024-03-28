@@ -17,6 +17,7 @@ abstract class ClientBase
 {
     public const ACCESS_TOKEN = 'access_token';
     public const ACCESS_TOKEN_EXP = 'access_token_expiry';
+    private const REFRESH_TOKEN = 'refresh_token';
 
     /** @var string[] List of Google API scopes required by the client. */
     protected array $scopes;
@@ -69,6 +70,34 @@ abstract class ClientBase
         } catch (Exception $e) {
             throw new SharedException($e);
         }
+    }
+
+    public function updatRefreshToken(string $token, string $configPath): void
+    {
+        try {
+            $jsonData = file_get_contents($configPath);
+            if (!$jsonData) {
+                throw new Exception("Failed to read configuration data from {$configPath}");
+            }
+            $data = json_decode($jsonData, true);
+            if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Failed to decode JSON data from {$configPath}");
+            }    
+            if (!is_array($data)) {
+                throw new Exception("JSON data in {$configPath} is not an array");
+            }
+            if (!isset($data[self::REFRESH_TOKEN])) {
+                throw new Exception("Refresh token key is missing in {$configPath}");
+            }
+        
+            $data[self::REFRESH_TOKEN] = $token;            
+            if (file_put_contents($configPath, json_encode($data, JSON_PRETTY_PRINT)) === false) {
+                throw new Exception("Failed to write updated data to {$configPath}");
+            }
+        } catch (Exception $e) {
+            throw new SharedException($e);
+        }
+
     }
 
     /**
