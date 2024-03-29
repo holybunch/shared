@@ -28,11 +28,10 @@ final class ClientTest extends BaseTest
         $client = new YoutubeClient();
         $client->setScopes([]);
         $_SESSION[ClientBase::ACCESS_TOKEN] = "access_token_123";
-        $_SESSION[ClientBase::ACCESS_TOKEN_EXP] = 12345;
+        $_SESSION[ClientBase::ACCESS_TOKEN_EXP] =  time() + 3600;
         $client = $client->create(parent::TMP_Y_CREDENTIALS, "65f8299c85c63");
         $this->assertNotNull($client);
         $this->assertInstanceOf(Google_Client::class, $client);
-        var_dump($_SESSION[ClientBase::ACCESS_TOKEN] . " --- test");
     }
 
     public function testCreateFailed(): void

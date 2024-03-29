@@ -3,7 +3,10 @@
 namespace holybunch\shared\google\youtube;
 
 use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use Google_Client;
+use holybunch\shared\exceptions\BadRequestException;
+use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\youtube\apis\PlaylistItemsAPI;
 use holybunch\shared\google\youtube\apis\PlaylistsAPI;
@@ -17,23 +20,32 @@ use holybunch\shared\google\youtube\apis\VideosAPI;
  */
 final class Service
 {
-    private const REFRESH_TOKEN = 'refresh_token';
+    public const REFRESH_TOKEN = 'refresh_token';
     private string $configFilePath;
     private string $credsFilePath;
     private Client $client;
     private Google_Client $googleClient;
 
+    /** @var string[] */
+    private array $configurationData;
+
     public function __construct(string $configFilePath, string $credsFilePath)
     {
+        $this->configFilePath = $configFilePath;
+        $this->credsFilePath = $credsFilePath;
+    }
+
+    public function create(): void
+    {
         try {
-            $this->configFilePath = $configFilePath;
-            $this->credsFilePath = $credsFilePath;
             $this->client = new Client();
-            $this->googleClient = $this->client->create($this->credsFilePath, $this->obtainRefreshToken());
+            $this->createConfigurationData();
+            $this->googleClient = $this->client->create(
+                $this->credsFilePath,
+                $this->configurationData[self::REFRESH_TOKEN]
+            );
         } catch (SharedException $e) {
             throw $e;
-        } catch (Exception $e) {
-            throw new SharedException($e);
         }
     }
 
@@ -57,59 +69,38 @@ final class Service
         return new VideosAPI($this->googleClient());
     }
 
-    private function obtainRefreshToken(): string
+    public function updatRefreshToken(string $token): void
+    {
+        try {
+            $this->configurationData[self::REFRESH_TOKEN] = $token;
+            if (!file_put_contents($this->configFilePath, json_encode($this->configurationData, JSON_PRETTY_PRINT))) {
+                throw new Exception("Failed to write updated data to {$this->configFilePath}");
+            }
+        } catch (Exception $e) {
+            throw new SharedException($e);
+        }
+    }
+
+    private function createConfigurationData(): void
     {
         try {
             $jsonData = file_get_contents($this->configFilePath);
             if (!$jsonData) {
-                throw new Exception("Failed to read configuration data from {$this->configFilePath}");
+                throw new NotFoundException("Failed to read configuration data from {$this->configFilePath}");
             }
 
             $data = json_decode($jsonData, true);
             if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Failed to decode JSON data from {$this->configFilePath}");
-            }
-            if (!is_array($data)) {
-                throw new Exception("JSON data in {$this->configFilePath} is not an array");
+                throw new BadRequestException("Failed to decode JSON data from {$this->configFilePath}");
             }
 
-            if (!isset($data[self::REFRESH_TOKEN])) {
-                throw new Exception("Refresh token key is missing in {$this->configFilePath}");
+            if (!is_array($data) || !isset($data[self::REFRESH_TOKEN])) {
+                throw new BadRequestException("Refresh token key is missing in {$this->configFilePath}");
             }
 
-            return $data[self::REFRESH_TOKEN];
+            $this->configurationData = $data;
         } catch (Exception $e) {
             throw new SharedException($e);
         }
     }
-
-    /*
-    public function updatRefreshToken(string $token, string $configFilePath): void
-    {
-        try {
-            $jsonData = file_get_contents($configFilePath);
-            if (!$jsonData) {
-                throw new Exception("Failed to read configuration data from {$configFilePath}");
-            }
-            $data = json_decode($jsonData, true);
-            if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception("Failed to decode JSON data from {$configFilePath}");
-            }
-            if (!is_array($data)) {
-                throw new Exception("JSON data in {$configFilePath} is not an array");
-            }
-            if (!isset($data[self::REFRESH_TOKEN])) {
-                throw new Exception("Refresh token key is missing in {$configFilePath}");
-            }
-
-            $data[self::REFRESH_TOKEN] = $token;
-            if (file_put_contents($configFilePath, json_encode($data, JSON_PRETTY_PRINT)) === false) {
-                throw new Exception("Failed to write updated data to {$configFilePath}");
-            }
-        } catch (Exception $e) {
-            throw new SharedException($e);
-        }
-
-    }
-    */
 }
