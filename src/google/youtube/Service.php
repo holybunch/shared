@@ -5,8 +5,8 @@ namespace holybunch\shared\google\youtube;
 use Exception;
 use Google_Client;
 use holybunch\shared\exceptions\BadRequestException;
-use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
+use holybunch\shared\google\ServiceBase;
 use holybunch\shared\google\youtube\apis\PlaylistItemsAPI;
 use holybunch\shared\google\youtube\apis\PlaylistsAPI;
 use holybunch\shared\google\youtube\apis\VideosAPI;
@@ -21,11 +21,9 @@ use holybunch\shared\google\youtube\apis\VideosAPI;
  * @final
  * @author holybunch
  */
-final class Service
+final class Service extends ServiceBase
 {
     public const REFRESH_TOKEN = 'refresh_token';
-    private string $configFilePath;
-    private string $credsFilePath;
     private Client $client;
     private Google_Client $googleClient;
 
@@ -40,6 +38,7 @@ final class Service
      */
     public function __construct(string $configFilePath, string $credsFilePath)
     {
+        parent::__construct();
         $this->configFilePath = $configFilePath;
         $this->credsFilePath = $credsFilePath;
     }
@@ -130,15 +129,7 @@ final class Service
     private function createConfigurationData(): void
     {
         try {
-            $jsonData = file_get_contents($this->configFilePath);
-            if (!$jsonData) {
-                throw new NotFoundException("Failed to read configuration data from {$this->configFilePath}");
-            }
-
-            $data = json_decode($jsonData, true);
-            if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-                throw new BadRequestException("Failed to decode JSON data from {$this->configFilePath}");
-            }
+            $data = $this->jsonContent($this->configFilePath);
 
             if (!is_array($data) || !isset($data[self::REFRESH_TOKEN])) {
                 throw new BadRequestException("Refresh token key is missing in {$this->configFilePath}");

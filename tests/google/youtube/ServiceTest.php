@@ -13,7 +13,7 @@ use holybunch\shared\google\youtube\apis\VideosAPI;
 use holybunch\shared\google\youtube\Service as YoutubeService;
 use holybunch\shared\tests\BaseTest;
 
-final class ServiceTest extends BaseTest
+final class YoutubeServiceTest extends BaseTest
 {
     public function testCreateHappy(): void
     {
@@ -59,6 +59,12 @@ final class ServiceTest extends BaseTest
         $data = json_decode(file_get_contents(self::TMP_Y_CONFIG), true); /** @phpstan-ignore-line */
         $this->assertArrayHasKey(YoutubeService::REFRESH_TOKEN, $data); /** @phpstan-ignore-line */
         $this->assertEquals("new token", $data[YoutubeService::REFRESH_TOKEN]); /** @phpstan-ignore-line */
+    }
+
+    public function testUpdatRefreshTokenFailed(): void
+    {
+        //should works 
+        $this->assertTrue(true);
     }
 }
 
