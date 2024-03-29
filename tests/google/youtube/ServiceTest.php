@@ -38,8 +38,8 @@ final class ServiceTest extends BaseTest
     {
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_BAD_REQUEST);
-        $this->expectExceptionMessage("Failed to decode JSON data from tests/.tmp/foo.txt");
-        $service = new YoutubeService("tests/.tmp/foo.txt", self::TMP_Y_CREDENTIALS);
+        $this->expectExceptionMessage("Failed to decode JSON data from tests/.tmp/not-json.txt");
+        $service = new YoutubeService("tests/.tmp/not-json.txt", self::TMP_Y_CREDENTIALS);
         $service->create();
     }
 
