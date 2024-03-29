@@ -18,10 +18,10 @@ abstract class ServiceBase
 
     public function __construct()
     {
-
     }
 
-    protected function jsonContent(string $filePath): mixed {
+    protected function jsonContent(string $filePath): mixed
+    {
         $content = file_get_contents($filePath);
         if (!$content) {
             throw new NotFoundException("Failed to read configuration data from {$this->configFilePath}");

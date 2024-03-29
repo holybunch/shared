@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace holybunch\shared\tests\google\youtube;
+namespace holybunch\shared\tests\google\auth;
 
 use Fig\Http\Message\StatusCodeInterface;
 use holybunch\shared\exceptions\SharedException;

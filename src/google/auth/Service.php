@@ -7,8 +7,8 @@ use holybunch\shared\exceptions\BadRequestException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\ServiceBase;
 
-class Service extends ServiceBase {
-
+class Service extends ServiceBase
+{
     private const CLIENT_ID = "client_id";
 
     public function __construct(string $configFilePath)
