@@ -7,15 +7,34 @@ use holybunch\shared\exceptions\BadRequestException;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\ServiceBase;
 
-class Service extends ServiceBase
+/**
+ * Class Service
+ *
+ * This class provides methods to interact with Google services authentication.
+ *
+ * @final
+ * @author holybunch
+ */
+final class Service extends ServiceBase
 {
     private const CLIENT_ID = "client_id";
 
+    /**
+     * Constructs the Service object with the paths to the configuration files.
+     *
+     * @param string $configFilePath The path to the configuration file.
+     */
     public function __construct(string $configFilePath)
     {
         $this->configFilePath = $configFilePath;
     }
 
+    /**
+     * Retrieve the client ID from the configuration file.
+     *
+     * @return string The client ID.
+     * @throws SharedException If an error occurs during the process.
+     */
     public function clientId(): string
     {
         try {
