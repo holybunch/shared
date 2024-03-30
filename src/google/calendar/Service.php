@@ -4,6 +4,7 @@ namespace holybunch\shared\google\calendar;
 
 use Exception;
 use holybunch\shared\exceptions\SharedException;
+use holybunch\shared\google\calendar\apis\EventsAPI;
 use holybunch\shared\google\ServiceBase;
 
 /**
@@ -34,5 +35,10 @@ final class Service extends ServiceBase
         } catch (Exception $e) {
             throw new SharedException($e);
         }
+    }
+
+    public function getEventsAPI(): EventsAPI
+    {
+        return new EventsAPI($this->googleClient());
     }
 }

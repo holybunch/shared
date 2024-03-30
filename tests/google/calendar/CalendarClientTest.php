@@ -1,19 +1,22 @@
 <?php
+
 declare(strict_types=1);
-namespace holybunch\shared\tests\google\youtube;
+
+namespace holybunch\shared\tests\google\calendar;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Google_Client;
 use holybunch\shared\exceptions\SharedException;
 use holybunch\shared\google\ClientBase;
-use holybunch\shared\google\youtube\Client as YoutubeClient;
+use holybunch\shared\google\calendar\Client as CalendarClient;
 use holybunch\shared\tests\BaseTest;
 
-final class ClientTest extends BaseTest
+final class CalendarClientTest extends BaseTest
 {
     public function testCreateNoSessionHappy(): void
     {
-        $client = new YoutubeClient();
+        unset($_SESSION);
+        $client = new CalendarClient();
         $client->setScopes([]);
         $this->assertFalse(isset($_SESSION));
         $client = $client->create(parent::TMP_Y_CREDENTIALS, "65f8299c85c63");
@@ -25,7 +28,7 @@ final class ClientTest extends BaseTest
 
     public function testCreateSessionHappy(): void
     {
-        $client = new YoutubeClient();
+        $client = new CalendarClient();
         $client->setScopes([]);
         $_SESSION[ClientBase::ACCESS_TOKEN] = "access_token_123";
         $_SESSION[ClientBase::ACCESS_TOKEN_EXP] =  time() + 3600;
@@ -36,7 +39,7 @@ final class ClientTest extends BaseTest
 
     public function testCreateFailed(): void
     {
-        $client = new YoutubeClient();
+        $client = new CalendarClient();
         $this->expectException(SharedException::class);
         $this->expectExceptionMessage("file \"not-existing.json\" does not exist");
         $this->expectExceptionCode(StatusCodeInterface::STATUS_BAD_REQUEST);
