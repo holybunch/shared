@@ -18,7 +18,6 @@ final class YoutubeServiceTest extends BaseTest
     public function testCreateHappy(): void
     {
         $service = new YoutubeService(self::TMP_Y_CONFIG, self::TMP_Y_CREDENTIALS);
-        $service->create();
         $this->assertInstanceOf(Google_Client::class, $service->googleClient());
         $this->assertInstanceOf(PlaylistsAPI::class, $service->playlistsAPI());
         $this->assertInstanceOf(PlaylistItemsAPI::class, $service->playlistItemsAPI());
@@ -30,8 +29,7 @@ final class YoutubeServiceTest extends BaseTest
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_NOT_FOUND);
         $this->expectExceptionMessage("Failed to read configuration data from tests/.tmp/.gitkeep");
-        $service = new YoutubeService("tests/.tmp/.gitkeep", self::TMP_Y_CREDENTIALS);
-        $service->create();
+        new YoutubeService("tests/.tmp/.gitkeep", self::TMP_Y_CREDENTIALS);
     }
 
     public function testCreateNotJson(): void
@@ -39,8 +37,7 @@ final class YoutubeServiceTest extends BaseTest
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_BAD_REQUEST);
         $this->expectExceptionMessage("Failed to decode JSON data from tests/.tmp/not-json.txt");
-        $service = new YoutubeService("tests/.tmp/not-json.txt", self::TMP_Y_CREDENTIALS);
-        $service->create();
+        new YoutubeService("tests/.tmp/not-json.txt", self::TMP_Y_CREDENTIALS);
     }
 
     public function testCreateMissingKey(): void
@@ -48,8 +45,7 @@ final class YoutubeServiceTest extends BaseTest
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_BAD_REQUEST);
         $this->expectExceptionMessage("Refresh token key is missing in tests/.tmp/missing-key.json");
-        $service = new YoutubeService("tests/.tmp/missing-key.json", self::TMP_Y_CREDENTIALS);
-        $service->create();
+        new YoutubeService("tests/.tmp/missing-key.json", self::TMP_Y_CREDENTIALS);
     }
 
     public function testUpdatRefreshTokenHappy(): void
