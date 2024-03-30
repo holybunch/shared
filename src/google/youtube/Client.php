@@ -26,5 +26,6 @@ final class Client extends ClientBase
             YouTube::YOUTUBEPARTNER,
             YouTube::YOUTUBEPARTNER_CHANNEL_AUDIT
         ]);
+        $this->service = "YOUTUBE";
     }
 }

@@ -22,16 +22,16 @@ final class CalendarClientTest extends BaseTest
         $client = $client->create(parent::TMP_Y_CREDENTIALS, "65f8299c85c63");
         $this->assertNotNull($client);
         $this->assertInstanceOf(Google_Client::class, $client);
-        $this->assertArrayHasKey(ClientBase::ACCESS_TOKEN, $_SESSION);
-        $this->assertArrayHasKey(ClientBase::ACCESS_TOKEN_EXP, $_SESSION);
+        $this->assertArrayHasKey(ClientBase::ACCESS_TOKEN . "CALENDAR", $_SESSION);
+        $this->assertArrayHasKey(ClientBase::ACCESS_TOKEN_EXP . "CALENDAR", $_SESSION);
     }
 
     public function testCreateSessionHappy(): void
     {
         $client = new CalendarClient();
         $client->setScopes([]);
-        $_SESSION[ClientBase::ACCESS_TOKEN] = "access_token_123";
-        $_SESSION[ClientBase::ACCESS_TOKEN_EXP] =  time() + 3600;
+        $_SESSION[ClientBase::ACCESS_TOKEN . "CALENDAR"] = "access_token_123";
+        $_SESSION[ClientBase::ACCESS_TOKEN_EXP. "CALENDAR"] =  time() + 3600;
         $client = $client->create(parent::TMP_Y_CREDENTIALS, "65f8299c85c63");
         $this->assertNotNull($client);
         $this->assertInstanceOf(Google_Client::class, $client);

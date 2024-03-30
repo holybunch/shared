@@ -25,5 +25,6 @@ final class Client extends ClientBase
             Calendar::CALENDAR_READONLY,
             Calendar::CALENDAR_SETTINGS_READONLY
         ]);
+        $this->service = "CALENDAR";
     }
 }

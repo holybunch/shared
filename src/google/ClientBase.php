@@ -18,6 +18,8 @@ abstract class ClientBase
     public const ACCESS_TOKEN = 'access_token';
     public const ACCESS_TOKEN_EXP = 'access_token_expiry';
 
+    protected string $service = "";
+
     /** @var string[] List of Google API scopes required by the client. */
     protected array $scopes;
 
@@ -62,10 +64,10 @@ abstract class ClientBase
 
             if (!$this->isSessionActive() || $this->accessTokenExpiry()) {
                 $client->fetchAccessTokenWithRefreshToken($refreshToken);
-                $_SESSION[self::ACCESS_TOKEN] = $client->getAccessToken();
-                $_SESSION[self::ACCESS_TOKEN_EXP] = time() + 3600;
+                $_SESSION[self::ACCESS_TOKEN . $this->service] = $client->getAccessToken();
+                $_SESSION[self::ACCESS_TOKEN_EXP . $this->service] = time() + 3600;
             } else {
-                $client->setAccessToken($_SESSION[self::ACCESS_TOKEN]);
+                $client->setAccessToken($_SESSION[self::ACCESS_TOKEN . $this->service]);
             }
             return $client;
         } catch (Exception $e) {
@@ -80,7 +82,8 @@ abstract class ClientBase
      */
     protected function isSessionActive(): bool
     {
-        return isset($_SESSION[self::ACCESS_TOKEN]) && isset($_SESSION[self::ACCESS_TOKEN_EXP]);
+        return isset($_SESSION[self::ACCESS_TOKEN . $this->service]) &&
+            isset($_SESSION[self::ACCESS_TOKEN_EXP . $this->service]);
     }
 
     /**
@@ -90,6 +93,6 @@ abstract class ClientBase
      */
     protected function accessTokenExpiry(): bool
     {
-        return time() > $_SESSION[self::ACCESS_TOKEN_EXP];
+        return time() > $_SESSION[self::ACCESS_TOKEN_EXP . $this->service];
     }
 }
