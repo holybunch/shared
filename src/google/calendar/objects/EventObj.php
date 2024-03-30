@@ -1,6 +1,6 @@
 <?php
 
-namespace holybunch\shared\google\youtube\objects;
+namespace holybunch\shared\google\calendar\objects;
 
 use DateTime;
 use Google\Service\Calendar\Event;
