@@ -9,9 +9,8 @@ use Google\Service\YouTube;
  * Google YouTube API client class.
  *
  * @author holybunch
- * @final
  */
-final class Client extends ClientBase
+class Client extends ClientBase
 {
     /**
      * Constructs a new Client object for interacting with the Google YouTube API.

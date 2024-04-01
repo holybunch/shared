@@ -16,10 +16,9 @@ use holybunch\shared\google\youtube\apis\VideosAPI;
  * It facilitates operations like creating the Google client, accessing various APIs,
  * and updating the refresh token.
  *
- * @final
  * @author holybunch
  */
-final class Service extends ServiceBase
+class Service extends ServiceBase
 {
     /**
      * Constructs the Service object with the paths to the configuration and credentials files.

@@ -12,10 +12,9 @@ use holybunch\shared\google\ServiceBase;
  *
  * This class provides methods to interact with Google services authentication.
  *
- * @final
  * @author holybunch
  */
-final class Service extends ServiceBase
+class Service extends ServiceBase
 {
     private const CLIENT_ID = "client_id";
 
