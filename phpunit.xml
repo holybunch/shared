@@ -19,6 +19,9 @@
     <testsuite name="google">
       <directory>tests/google</directory>
     </testsuite>
+    <testsuite name="logs">
+      <directory>tests/logs</directory>
+    </testsuite>
   </testsuites>
   <coverage>
     <report>

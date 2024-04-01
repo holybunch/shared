@@ -1,9 +1,10 @@
 <?php
 
-namespace holybunch\shared\google\youtube;
+namespace holybunch\shared\google\youtube\objects;
 
 use DateInterval;
 use DateTime;
+use Google\Service\YouTube\Video;
 
 /**
  * Represents a YouTube video object retrieved from the API.
@@ -17,45 +18,30 @@ class VideoObject
     private string $title;
     private string $thumbnail;
     private ?string $publishedAt;
-    private int $likeCount;
-    private int $viewCount;
+    private string $likeCount;
+    private string $viewCount;
     private string $duration;
 
     /**
      * Constructs a VideoObject instance from the provided YouTube API video item array.
      *
-     * @param array{
-     *      id: string,
-     *      snippet: array{
-     *          title: string,
-     *          publishedAt: string|null,
-     *          thumbnails: array{
-     *              medium: array{
-     *                  url: string,
-     *              },
-     *          },
-     *      },
-     *      statistics: array{
-     *          likeCount: int,
-     *          viewCount: int,
-     *      },
-     *      contentDetails: array{
-     *          duration: string,
-     *      }
-     * } $apiVideoItem The array containing information about the video item from the YouTube API response.
+     * @param Video $apiVideoItem The google object containing information about the video
+     *              item from the YouTube API response.
      */
-    public function __construct(array $apiVideoItem)
+    public function __construct(Video $apiVideoItem)
     {
-        $start = new DateTime('@0'); // Unix epoch
-        $start->add(new DateInterval($apiVideoItem['contentDetails']['duration']));
+        $snippet = $apiVideoItem->getSnippet();
 
-        $this->id = $apiVideoItem['id'];
-        $this->title = $apiVideoItem['snippet']['title'];
-        $this->thumbnail = $apiVideoItem['snippet']['thumbnails']['medium']['url'];
-        $this->publishedAt = $this->formatDate($apiVideoItem['snippet']['publishedAt']);
-        $this->likeCount = $apiVideoItem['statistics']['likeCount'];
-        $this->viewCount = $apiVideoItem['statistics']['viewCount'];
+        $start = new DateTime('@0'); // Unix epoch
+        $start->add(new DateInterval($apiVideoItem->getContentDetails()->getDuration()));
         $this->duration = $start->format('H:i:s');
+
+        $this->id = $apiVideoItem->getId();
+        $this->title = $snippet->getTitle();
+        $this->thumbnail = $snippet->getThumbnails()->getMedium()->getUrl();
+        $this->publishedAt = $this->formatDate($snippet->getPublishedAt());
+        $this->likeCount = $apiVideoItem->getStatistics()->getLikeCount();
+        $this->viewCount = $apiVideoItem->getStatistics()->getViewCount();
     }
 
     /**
@@ -101,9 +87,9 @@ class VideoObject
     /**
      * Get the number of likes on the video.
      *
-     * @return int The number of likes on the video
+     * @return string The number of likes on the video
      */
-    public function getLikeCount(): int
+    public function getLikeCount(): string
     {
         return $this->likeCount;
     }
@@ -111,9 +97,9 @@ class VideoObject
     /**
      * Get the number of views on the video.
      *
-     * @return int The number of views on the video
+     * @return string The number of views on the video
      */
-    public function getViewCount(): int
+    public function getViewCount(): string
     {
         return $this->viewCount;
     }
