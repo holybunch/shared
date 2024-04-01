@@ -60,7 +60,7 @@ abstract class ClientBase
             $client->setAuthConfig($credentials);
             $client->setPrompt("consent");
             $client->setAccessType("offline");
-            $client->setIncludeGrantedScopes(true);
+            $client->setIncludeGrantedScopes(false);
             $client->setScopes($this->scopes);
 
             if (!$this->isSessionActive() || $this->accessTokenExpiry()) {
