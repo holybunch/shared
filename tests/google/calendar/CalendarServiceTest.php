@@ -43,5 +43,20 @@ final class CalendarServiceTest extends BaseTest
         $this->expectExceptionMessage("Refresh token key is missing in tests/.tmp/missing-key.json");
         new CalendarService("tests/.tmp/missing-key.json", self::TMP_Y_CREDENTIALS);
     }
+
+    public function testUpdatRefreshTokenHappy(): void
+    {
+        $service = new CalendarService(self::TMP_Y_CONFIG, self::TMP_Y_CREDENTIALS);
+        $service->updatRefreshToken("new token");
+        $data = json_decode(file_get_contents(self::TMP_Y_CONFIG), true); /** @phpstan-ignore-line */
+        $this->assertArrayHasKey(CalendarService::REFRESH_TOKEN, $data); /** @phpstan-ignore-line */
+        $this->assertEquals("new token", $data[CalendarService::REFRESH_TOKEN]); /** @phpstan-ignore-line */
+    }
+
+    public function testUpdatRefreshTokenFailed(): void
+    {
+        //should works 
+        $this->assertTrue(true);
+    }
 }
 

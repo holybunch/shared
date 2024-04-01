@@ -2,9 +2,11 @@
 
 namespace holybunch\shared\google;
 
+use Exception;
 use Google_Client;
 use holybunch\shared\exceptions\BadRequestException;
 use holybunch\shared\exceptions\NotFoundException;
+use holybunch\shared\exceptions\SharedException;
 
 /**
  * Class ServiceBase
@@ -86,5 +88,24 @@ abstract class ServiceBase
             throw new BadRequestException("Failed to decode JSON data from {$this->configFilePath}");
         }
         return $data;
+    }
+
+    /**
+     * Updates the refresh token in the configuration data.
+     *
+     * @param string $token The new refresh token.
+     *
+     * @throws SharedException If an error occurs while updating the token.
+     */
+    public function updatRefreshToken(string $token): void
+    {
+        try {
+            $this->configurationData[self::REFRESH_TOKEN] = $token;
+            if (!file_put_contents($this->configFilePath, json_encode($this->configurationData, JSON_PRETTY_PRINT))) {
+                throw new Exception("Failed to write updated data to {$this->configFilePath}");
+            }
+        } catch (Exception $e) {
+            throw new SharedException($e);
+        }
     }
 }

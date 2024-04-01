@@ -69,23 +69,4 @@ class Service extends ServiceBase
     {
         return new VideosAPI($this->googleClient());
     }
-
-    /**
-     * Updates the refresh token in the configuration data.
-     *
-     * @param string $token The new refresh token.
-     *
-     * @throws SharedException If an error occurs while updating the token.
-     */
-    public function updatRefreshToken(string $token): void
-    {
-        try {
-            $this->configurationData[self::REFRESH_TOKEN] = $token;
-            if (!file_put_contents($this->configFilePath, json_encode($this->configurationData, JSON_PRETTY_PRINT))) {
-                throw new Exception("Failed to write updated data to {$this->configFilePath}");
-            }
-        } catch (Exception $e) {
-            throw new SharedException($e);
-        }
-    }
 }
