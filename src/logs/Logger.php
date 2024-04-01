@@ -10,7 +10,7 @@ use Monolog\Processor\IntrospectionProcessor;
 
 class Logger extends \Monolog\Logger
 {
-    private const FILE_FORMAT = "%s/.logs/%s/log-%s-%s.log";
+    private const FILE_FORMAT = "%s/%s/log-%s-%s.log";
 
     private function __construct(string $name,)
     {

@@ -20,7 +20,7 @@ final class LoggerTest extends BaseTest
 
     public function testDebugHappy(): void
     {
-        $this->logger = Logger::build("tests/.tmp/", Level::Debug);
+        $this->logger = Logger::build("tests/.tmp/.logs/", Level::Debug);
         $this->logger->debug("message", ["type" => "debug"]);
         $this->logger->info("message", ["type" => "info"]);
         $this->logger->warning("message", ["type" => "warning"]);
