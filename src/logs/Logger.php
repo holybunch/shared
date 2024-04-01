@@ -6,25 +6,32 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 use Monolog\Level;
+use Monolog\Logger as MonologLogger;
 use Monolog\Processor\IntrospectionProcessor;
 
-class Logger extends \Monolog\Logger
+/**
+ * Class Logger
+ * 
+ * This class provides a singleton logger instance using Monolog library for logging purposes.
+ */
+class Logger
 {
-    private const FILE_FORMAT = "%s/%s/log-%s-%s.log";
+    private static ?MonologLogger $instance = null;
 
-    private function __construct(string $name,)
+    /**
+     * Build and return the logger instance.
+     * 
+     * @param string $root The root directory where log files will be stored.
+     * @param Level $level The logging level (default is Level::Info).
+     * @return MonologLogger The logger instance.
+     */
+    public static function build(string $root, Level $level = Level::Info): MonologLogger
     {
-        parent::__construct($name);
-    }
-
-    private static $instance = null;
-    public static function build(string $root, Level $level = Level::Info): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self("logger");
+        if (!isset(self::$instance)) {
+            self::$instance = new MonologLogger("logger");
 
             $handler = new StreamHandler(
-                sprintf(self::FILE_FORMAT, $root, date("Y"), date("m"), date("d")),
+                sprintf("%s/%s/log-%s-%s.log", $root, date("Y"), date("m"), date("d")),
                 $level
             );
             $handler->setFormatter(new LineFormatter(
@@ -36,7 +43,7 @@ class Logger extends \Monolog\Logger
 
             self::$instance->pushHandler($handler);
             self::$instance->pushHandler(new FirePHPHandler());
-            self::$instance->pushProcessor(new IntrospectionProcessor(Level::Info, array(), 1));
+            self::$instance->pushProcessor(new IntrospectionProcessor(Level::Info, [], 1));
         }
         return  self::$instance;
     }

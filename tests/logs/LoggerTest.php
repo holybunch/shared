@@ -7,11 +7,12 @@ namespace holybunch\shared\tests\logs;
 use holybunch\shared\tests\BaseTest;
 use holybunch\shared\logs\Logger;
 use Monolog\Level;
+use Monolog\Logger as MonologLogger;
 
 final class LoggerTest extends BaseTest
 {
     private string $file = "tests/.tmp/.logs/%s/log-%s-%s.log";
-    private Logger $logger;
+    private MonologLogger $logger;
 
     protected function tearDown(): void
     {
@@ -29,6 +30,7 @@ final class LoggerTest extends BaseTest
         $logContents = file_get_contents(
             sprintf($this->file, date("Y"), date("m"), date("d"))
         );
+        $this->assertIsString($logContents);
         $this->assertStringContainsString('{"type":"debug"}', $logContents);
         $this->assertStringContainsString('{"type":"info"}', $logContents);
         $this->assertStringContainsString('{"type":"warning"}', $logContents);
