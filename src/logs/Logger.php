@@ -11,7 +11,7 @@ use Monolog\Processor\IntrospectionProcessor;
 
 /**
  * Class Logger
- * 
+ *
  * This class provides a singleton logger instance using Monolog library for logging purposes.
  */
 class Logger
@@ -20,7 +20,7 @@ class Logger
 
     /**
      * Build and return the logger instance.
-     * 
+     *
      * @param string $root The root directory where log files will be stored.
      * @param Level $level The logging level (default is Level::Info).
      * @return MonologLogger The logger instance.
