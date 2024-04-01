@@ -40,6 +40,7 @@ abstract class ClientBase
      */
     public function setScopes(array $scopes): void
     {
+        unset($this->scopes);
         $this->scopes = $scopes;
     }
 
