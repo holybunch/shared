@@ -22,6 +22,9 @@
     <testsuite name="logs">
       <directory>tests/logs</directory>
     </testsuite>
+    <testsuite name="security">
+      <directory>tests/security</directory>
+    </testsuite>
   </testsuites>
   <coverage>
     <report>
