@@ -1,6 +1,6 @@
 <?php
 
-namespace holybunch\shared\media\music;
+namespace holybunch\shared\media\mp3;
 
 use wapmorgan\Mp3Info\Mp3Info;
 

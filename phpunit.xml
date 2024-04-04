@@ -25,6 +25,9 @@
     <testsuite name="security">
       <directory>tests/security</directory>
     </testsuite>
+    <testsuite name="media">
+      <directory>tests/media</directory>
+    </testsuite>
   </testsuites>
   <coverage>
     <report>

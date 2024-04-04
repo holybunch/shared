@@ -1,6 +1,6 @@
 <?php
 
-namespace holybunch\shared\media\music;
+namespace holybunch\shared\media\mp3;
 
 use Exception;
 use holybunch\shared\exceptions\SharedException;
