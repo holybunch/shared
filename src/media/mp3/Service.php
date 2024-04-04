@@ -9,28 +9,46 @@ use RecursiveIteratorIterator;
 use SplFileInfo;
 use UnexpectedValueException;
 
+/**
+ * Class Service
+ * Service class for managing MP3 media files.
+ */
 class Service
 {
-    /** @var string[] */
+    /** @var string[] $exclusions Array to store exclusion messages. */
     private array $exclusions;
 
-    /** @return string[] */
+    /**
+     * Returns the exclusions array.
+     *
+     * @return string[] The array of exclusion messages.
+     */
     public function exclusions(): array
     {
         return $this->exclusions;
     }
 
+    /** @var string $path The base path for the MP3 media files. */
     private string $path;
 
+    /**
+     * Constructor for Service class.
+     *
+     * @param string $path The base path for the MP3 media files.
+     */
     public function __construct(string $path)
     {
         $this->path = $path;
     }
 
     /**
-     * @return Entity[]
+     * Retrieves the songs from the specified collection.
+     *
+     * @param string $collection The name of the collection to retrieve songs from.
+     * @return Entity[] An array of Entity objects representing the songs in the collection.
+     * @throws SharedException If an error occurs during song retrieval.
      */
-    public function collectionSongs(string $collection): array
+    public function songs(string $collection): array
     {
         try {
             $songs = [];
@@ -38,7 +56,7 @@ class Service
             $rdi = new RecursiveDirectoryIterator($this->path . $collection);
             foreach (new RecursiveIteratorIterator($rdi) as $file) {
                 if ($file instanceof SplFileInfo) {
-                    $this->processMusicFile($file, $collection, $songs);
+                    $this->processEntity($file, $songs);
                 }
             }
             return $songs;
@@ -48,16 +66,33 @@ class Service
     }
 
     /**
-     * @param Entity[] $songs
+     * Retrieves the collections available in the MP3 media.
+     *
+     * @return string[] An array of collection names.
      */
-    private function processMusicFile(SplFileInfo $file, string $collection, array &$songs): void
+    public function collections(): array
+    {
+        $subfolders = [];
+        foreach (glob(rtrim($this->path, '/') . '/*', GLOB_ONLYDIR) as $folder) {
+            $subfolders[] = basename($folder);
+        }
+        return $subfolders;
+    }
+
+    /**
+     * Processes the given file as an Entity object and adds it to the songs array.
+     *
+     * @param SplFileInfo $file       The file to process.
+     * @param Entity[]    $songs      The array of songs to add the Entity object to.
+     */
+    private function processEntity(SplFileInfo $file, array &$songs): void
     {
         try {
             if ($file->isFile()) {
                 $songs[] = Entity::parse($file->getPathname());
             }
         } catch (Exception $e) {
-            $this->exclusions[] = "error for collection '$collection' and file '$file' occurred: " . $e->getMessage();
+            $this->exclusions[] = "error for the file '$file' occurred: " . $e->getMessage();
         }
     }
 }

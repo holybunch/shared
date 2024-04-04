@@ -19,9 +19,9 @@ final class ServiceTest extends BaseTest
         $this->service = new MusicService(parent::MEDIA_MP3);
     }
 
-    public function testCollectionSongsHappy(): void
+    public function testSongsHappy(): void
     {
-        $result = $this->service->collectionSongs("happy");
+        $result = $this->service->songs("happy");
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
         $this->assertEquals("music-file-ok.mp3", $result[0]->getFileName());
@@ -32,20 +32,29 @@ final class ServiceTest extends BaseTest
         $this->assertEquals("N/A", $result[0]->getComment());
         $this->assertEquals("6,1", $result[0]->getFilesize());
 
-        $exclusions = $this->service->exclusions();
-        $this->assertCount(1, $exclusions);
+        $result = $this->service->exclusions();
+        $this->assertIsArray($result);
+        $this->assertCount(1, $result);
         $this->assertEquals(
-            "error for collection 'happy' and file 'tests/.tmp/mp3/happy/04-01.mp3' occurred: " .
+            "error for the file 'tests/.tmp/mp3/happy/04-01.mp3' occurred: " .
                 "File tests/.tmp/mp3/happy/04-01.mp3 is not mpeg/audio!",
-            $exclusions[0]
+            $result[0]
         );
     }
 
-    public function testCollectionSongsNotFound(): void
+    public function testSongsNotFound(): void
     {
         $this->expectException(SharedException::class);
         $this->expectExceptionMessage("No such file or directory");
         $this->expectExceptionCode(StatusCodeInterface::STATUS_NOT_FOUND);
-        $this->service->collectionSongs("unhappy");
+        $this->service->songs("unhappy");
+    }
+
+    public function testCollectionsHappy(): void
+    {
+        $result = $this->service->collections();
+        $this->assertIsArray($result);
+        $this->assertCount(1, $result);
+        $this->assertEquals("happy", $result[0]);
     }
 }
