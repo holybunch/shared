@@ -24,8 +24,8 @@ final class CalendarServiceTest extends BaseTest
     {
         $this->expectException(SharedException::class);
         $this->expectExceptionCode(StatusCodeInterface::STATUS_NOT_FOUND);
-        $this->expectExceptionMessage("Failed to read configuration data from tests/.tmp/.gitkeep");
-        new CalendarService("tests/.tmp/.gitkeep", self::TMP_Y_CREDENTIALS);
+        $this->expectExceptionMessage("Failed to read configuration data from tests/.tmp/empty.txt");
+        new CalendarService("tests/.tmp/empty.txt", self::TMP_Y_CREDENTIALS);
     }
 
     public function testCreateNotJson(): void

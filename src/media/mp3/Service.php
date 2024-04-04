@@ -28,7 +28,7 @@ class Service
     }
 
     /**
-     * @return string[]
+     * @return Entity[]
      */
     public function collectionSongs(string $collection): array
     {
@@ -48,7 +48,7 @@ class Service
     }
 
     /**
-     * @param string[] $songs
+     * @param Entity[] $songs
      */
     private function processMusicFile(SplFileInfo $file, string $collection, array &$songs): void
     {

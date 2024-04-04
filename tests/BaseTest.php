@@ -7,7 +7,7 @@ abstract class BaseTest extends TestCase
 {
     protected const TMP_Y_CREDENTIALS = "tests/.tmp/credentials.json";
     protected const TMP_Y_CONFIG = "tests/.tmp/configuration.json";
-    protected const MEDIA_MP3 = "tests/.tmp/mp3";
+    protected const MEDIA_MP3 = "tests/.tmp/mp3/";
 
     public static function setUpBeforeClass(): void
     {
