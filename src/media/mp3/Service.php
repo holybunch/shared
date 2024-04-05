@@ -3,6 +3,7 @@
 namespace holybunch\shared\media\mp3;
 
 use Exception;
+use holybunch\shared\exceptions\NotFoundException;
 use holybunch\shared\exceptions\SharedException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -69,11 +70,16 @@ class Service
      * Retrieves the collections available in the MP3 media.
      *
      * @return string[] An array of collection names.
+     * @throws NotFoundException If an error occurs during collection retrieval.
      */
     public function collections(): array
     {
         $subfolders = [];
-        foreach (glob(rtrim($this->path, '/') . '/*', GLOB_ONLYDIR) as $folder) {
+        $folders = glob(rtrim($this->path, '/') . '/*', GLOB_ONLYDIR);
+        if (!$folders) {
+            throw new NotFoundException("An error occurred during the retrieval of collections.");
+        }
+        foreach ($folders as $folder) {
             $subfolders[] = basename($folder);
         }
         return $subfolders;
