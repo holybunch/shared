@@ -5,6 +5,7 @@ namespace holybunch\shared\exceptions;
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  * Exception class used for handling shared exceptions in the application.
@@ -39,6 +40,8 @@ class SharedException extends Exception
         switch ($e::class) {
             case InvalidArgumentException::class:
                 return StatusCodeInterface::STATUS_BAD_REQUEST;
+            case UnexpectedValueException::class:
+                return StatusCodeInterface::STATUS_NOT_FOUND;
             default:
                 return StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
         }
