@@ -72,8 +72,10 @@ class EventsAPI extends Calendar
     private function fromFormatted(): string
     {
         $now = new DateTime('now');
-        $now->modify('next ' . ($now->format('N') <= 5 ? 'saturday' : 'monday'));
-        return $now->format(DateTime::RFC3339);
+        $now->setISODate($now->format('Y'), $now->format('W'));
+        $now->modify('+4 days');
+        $fridayOfWeek = $now->format(DateTime::RFC3339);
+        return $fridayOfWeek;
     }
 
     /**
